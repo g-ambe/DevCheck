@@ -1,7 +1,6 @@
 import './styles.css';
 
 const endpoint = import.meta.env.VITE_DEVCHECK_FORM_ENDPOINT;
-const successCheckGif = '/src/image/Success Check.gif';
 
 const app = document.querySelector('#app');
 
@@ -58,10 +57,12 @@ app.innerHTML = `
 <main id="top">
   <section class="hero section-alt">
     <div class="hero-bg" aria-hidden="true"></div>
+    <div class="container hero__top">
+      <p class="pill">法人向け開発相談サービス</p>
+      <h1>開発に関するセカンドオピニオンは、<br><span class="brand">DevCheckへ。</span></h1>
+    </div>
     <div class="container hero__grid">
       <div class="hero-copy">
-        <p class="pill">法人向け開発相談サービス</p>
-        <h1>開発に関するセカンドオピニオンは、<br><span class="brand">DevCheckへ。</span></h1>
         <p class="lead">DevCheckは、<strong>受託開発の実績</strong>を持つ<strong>開発会社が運営</strong>する法人向けの開発相談サービスです。</p>
         <p class="lead">見積もり・進め方・開発会社選びの不安を、現場を知る<strong>第三者視点</strong>でチェックします。</p>
         <p class="lead">必要に応じて自社での対応も可能ですが、あくまで<strong>貴社に合った進め方</strong>を優先してご提案します。</p>
@@ -71,7 +72,7 @@ app.innerHTML = `
       <aside class="hero-card" id="heroChecklistCard">
         <p class="hero-card__title">発注前に確認したいこと</p>
         <ul>
-          <li class="check-item" data-check-state="idle"><span class="check-visual" aria-hidden="true"></span><span>見積もりは妥当か</span></li><li class="check-item" data-check-state="idle"><span class="check-visual" aria-hidden="true"></span><span>進め方にリスクはないか</span></li><li class="check-item" data-check-state="idle"><span class="check-visual" aria-hidden="true"></span><span>開発会社選びは適切か</span></li><li class="check-item" data-check-state="idle"><span class="check-visual" aria-hidden="true"></span><span>要件に抜け漏れはないか</span></li><li class="check-item" data-check-state="idle"><span class="check-visual" aria-hidden="true"></span><span>相談前に整理すべき点は何か</span></li>
+          <li class="check-item" data-check-state="checked"><span class="check-visual" aria-hidden="true"></span><span>見積もりは妥当か</span></li><li class="check-item" data-check-state="checked"><span class="check-visual" aria-hidden="true"></span><span>進め方にリスクはないか</span></li><li class="check-item" data-check-state="checked"><span class="check-visual" aria-hidden="true"></span><span>開発会社選びは適切か</span></li><li class="check-item" data-check-state="checked"><span class="check-visual" aria-hidden="true"></span><span>要件に抜け漏れはないか</span></li><li class="check-item" data-check-state="checked"><span class="check-visual" aria-hidden="true"></span><span>相談前に整理すべき点は何か</span></li>
         </ul>
         <p class="hero-card__note">DevCheckが第三者視点で整理します</p>
       </aside>
@@ -155,75 +156,3 @@ form?.addEventListener('submit', async (e) => {
 });
 
 
-const checklistCard = document.getElementById('heroChecklistCard');
-const checkItems = Array.from(document.querySelectorAll('.check-item'));
-const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-const animationDurationMs = 900;
-const firstItemDelayMs = 300;
-const itemStaggerMs = 230;
-let checklistPlayed = false;
-
-const preloadGif = (src) => new Promise((resolve) => {
-  const img = new Image();
-  img.onload = () => resolve(true);
-  img.onerror = () => resolve(false);
-  img.src = src;
-});
-
-const gifPreloadPromise = preloadGif(successCheckGif);
-
-const setCheckState = (item, state) => {
-  item.dataset.checkState = state;
-  const visual = item.querySelector('.check-visual');
-  if (!visual) return;
-
-  if (state === 'animating') {
-    const restartSrc = `${successCheckGif}?t=${Date.now()}`;
-    visual.innerHTML = `<img src="${restartSrc}" alt="" width="32" height="32" decoding="async">`;
-  } else {
-    visual.innerHTML = '';
-  }
-};
-
-const runChecklistAnimation = async () => {
-  if (checklistPlayed) return;
-  checklistPlayed = true;
-
-  if (reducedMotion) {
-    checkItems.forEach((item) => setCheckState(item, 'checked'));
-    return;
-  }
-
-  const isPreloaded = await gifPreloadPromise;
-  if (!isPreloaded) {
-    checkItems.forEach((item) => setCheckState(item, 'checked'));
-    return;
-  }
-
-  await new Promise((resolve) => setTimeout(resolve, firstItemDelayMs));
-
-  for (let i = 0; i < checkItems.length; i += 1) {
-    const item = checkItems[i];
-
-    if (i > 0) {
-      await new Promise((resolve) => setTimeout(resolve, itemStaggerMs));
-    }
-
-    setCheckState(item, 'animating');
-    await new Promise((resolve) => setTimeout(resolve, animationDurationMs));
-    setCheckState(item, 'checked');
-  }
-};
-
-if (checklistCard) {
-  const observer = new IntersectionObserver((entries) => {
-    entries.forEach((entry) => {
-      if (entry.isIntersecting && !checklistPlayed) {
-        runChecklistAnimation();
-        observer.disconnect();
-      }
-    });
-  }, { threshold: 0.4 });
-
-  observer.observe(checklistCard);
-}
