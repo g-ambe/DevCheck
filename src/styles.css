@@ -45,10 +45,11 @@ h3 { margin: 8px 0; font-size: 1.1rem; }
 .hero-card::after { content: ""; position: absolute; inset: -14px -14px auto auto; width: 74px; height: 74px; background: radial-gradient(circle, #b6efe6 0%, #dff9f3 70%); border-radius: 50%; }
 .hero-card__title { margin: 0 0 14px; font-weight: 800; color: #244a90; font-size: 1.08rem; }
 .hero-card ul { margin: 0; padding: 0; list-style: none; display: grid; gap: 10px; }
-.hero-card li { padding: 11px 12px; border-radius: 12px; background: #f5f9ff; border: 1px solid #dce8fb; display: grid; grid-template-columns: 30px 1fr; gap: 8px; align-items: center; transition: background-color .25s ease, border-color .25s ease; }
-.check-visual { width: 28px; height: 28px; border-radius: 50%; border: 1.5px solid #b8cce8; background: #fff; display: grid; place-items: center; overflow: hidden; }
-.check-visual img { width: 28px; height: 28px; object-fit: contain; }
-.check-item[data-check-state="animating"], .check-item[data-check-state="checked"] { background: #eef8ff; border-color: #c9ddfb; }
+.hero-card li { padding: 11px 12px; border-radius: 12px; background: #f5f9ff; border: 1px solid #dce8fb; display: grid; grid-template-columns: 32px 1fr; gap: 8px; align-items: center; transition: background-color .25s ease, border-color .25s ease; }
+.check-visual { width: 32px; height: 32px; border-radius: 50%; border: 1.5px solid #b8cce8; background: #fff; display: grid; place-items: center; overflow: hidden; }
+.check-visual img { width: 32px; height: 32px; object-fit: contain; display: block; }
+.check-item[data-check-state="animating"] { background: #eef8ff; border-color: #c9ddfb; }
+.check-item[data-check-state="checked"] { background: #effbf6; border-color: #ccecdf; }
 .check-item[data-check-state="checked"] .check-visual { border: 0; background: #dff8f1; position: relative; }
 .check-item[data-check-state="checked"] .check-visual::before { content: "✓"; color: #1f8f82; font-size: .83rem; font-weight: 800; }
 .hero-card__note { margin: 13px 0 0; color: #2f5ea8; font-weight: 700; font-size: .92rem; }

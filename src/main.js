@@ -158,14 +158,28 @@ form?.addEventListener('submit', async (e) => {
 const checklistCard = document.getElementById('heroChecklistCard');
 const checkItems = Array.from(document.querySelectorAll('.check-item'));
 const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+const animationDurationMs = 900;
+const firstItemDelayMs = 300;
+const itemStaggerMs = 230;
 let checklistPlayed = false;
+
+const preloadGif = (src) => new Promise((resolve) => {
+  const img = new Image();
+  img.onload = () => resolve(true);
+  img.onerror = () => resolve(false);
+  img.src = src;
+});
+
+const gifPreloadPromise = preloadGif(successCheckGif);
 
 const setCheckState = (item, state) => {
   item.dataset.checkState = state;
   const visual = item.querySelector('.check-visual');
   if (!visual) return;
+
   if (state === 'animating') {
-    visual.innerHTML = `<img src="${successCheckGif}" alt="" width="28" height="28" loading="lazy" decoding="async">`;
+    const restartSrc = `${successCheckGif}?t=${Date.now()}`;
+    visual.innerHTML = `<img src="${restartSrc}" alt="" width="32" height="32" decoding="async">`;
   } else {
     visual.innerHTML = '';
   }
@@ -180,12 +194,23 @@ const runChecklistAnimation = async () => {
     return;
   }
 
+  const isPreloaded = await gifPreloadPromise;
+  if (!isPreloaded) {
+    checkItems.forEach((item) => setCheckState(item, 'checked'));
+    return;
+  }
+
+  await new Promise((resolve) => setTimeout(resolve, firstItemDelayMs));
+
   for (let i = 0; i < checkItems.length; i += 1) {
     const item = checkItems[i];
-    const startDelay = 180 + i * 180;
-    await new Promise((resolve) => setTimeout(resolve, startDelay));
+
+    if (i > 0) {
+      await new Promise((resolve) => setTimeout(resolve, itemStaggerMs));
+    }
+
     setCheckState(item, 'animating');
-    await new Promise((resolve) => setTimeout(resolve, 900));
+    await new Promise((resolve) => setTimeout(resolve, animationDurationMs));
     setCheckState(item, 'checked');
   }
 };
@@ -198,7 +223,7 @@ if (checklistCard) {
         observer.disconnect();
       }
     });
-  }, { threshold: 0.35 });
+  }, { threshold: 0.4 });
 
   observer.observe(checklistCard);
 }
