@@ -1,6 +1,7 @@
 import './styles.css';
 
 const endpoint = import.meta.env.VITE_DEVCHECK_FORM_ENDPOINT;
+const successCheckGif = '/src/image/Success Check.gif';
 
 const app = document.querySelector('#app');
 
@@ -67,10 +68,10 @@ app.innerHTML = `
         <a href="#form" class="btn">無料で相談する</a>
         <div class="badge-row"><span>匿名相談可</span><span>初回相談無料</span><span>NDA対応可</span><span>無理な営業なし</span></div>
       </div>
-      <aside class="hero-card">
+      <aside class="hero-card" id="heroChecklistCard">
         <p class="hero-card__title">発注前に確認したいこと</p>
         <ul>
-          <li>見積もりは妥当か</li><li>進め方にリスクはないか</li><li>開発会社選びは適切か</li><li>要件に抜け漏れはないか</li><li>相談前に整理すべき点は何か</li>
+          <li class="check-item" data-check-state="idle"><span class="check-visual" aria-hidden="true"></span><span>見積もりは妥当か</span></li><li class="check-item" data-check-state="idle"><span class="check-visual" aria-hidden="true"></span><span>進め方にリスクはないか</span></li><li class="check-item" data-check-state="idle"><span class="check-visual" aria-hidden="true"></span><span>開発会社選びは適切か</span></li><li class="check-item" data-check-state="idle"><span class="check-visual" aria-hidden="true"></span><span>要件に抜け漏れはないか</span></li><li class="check-item" data-check-state="idle"><span class="check-visual" aria-hidden="true"></span><span>相談前に整理すべき点は何か</span></li>
         </ul>
         <p class="hero-card__note">DevCheckが第三者視点で整理します</p>
       </aside>
@@ -152,3 +153,52 @@ form?.addEventListener('submit', async (e) => {
     submitBtn.textContent = '無料で相談する';
   }
 });
+
+
+const checklistCard = document.getElementById('heroChecklistCard');
+const checkItems = Array.from(document.querySelectorAll('.check-item'));
+const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+let checklistPlayed = false;
+
+const setCheckState = (item, state) => {
+  item.dataset.checkState = state;
+  const visual = item.querySelector('.check-visual');
+  if (!visual) return;
+  if (state === 'animating') {
+    visual.innerHTML = `<img src="${successCheckGif}" alt="" width="28" height="28" loading="lazy" decoding="async">`;
+  } else {
+    visual.innerHTML = '';
+  }
+};
+
+const runChecklistAnimation = async () => {
+  if (checklistPlayed) return;
+  checklistPlayed = true;
+
+  if (reducedMotion) {
+    checkItems.forEach((item) => setCheckState(item, 'checked'));
+    return;
+  }
+
+  for (let i = 0; i < checkItems.length; i += 1) {
+    const item = checkItems[i];
+    const startDelay = 180 + i * 180;
+    await new Promise((resolve) => setTimeout(resolve, startDelay));
+    setCheckState(item, 'animating');
+    await new Promise((resolve) => setTimeout(resolve, 900));
+    setCheckState(item, 'checked');
+  }
+};
+
+if (checklistCard) {
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((entry) => {
+      if (entry.isIntersecting && !checklistPlayed) {
+        runChecklistAnimation();
+        observer.disconnect();
+      }
+    });
+  }, { threshold: 0.35 });
+
+  observer.observe(checklistCard);
+}
