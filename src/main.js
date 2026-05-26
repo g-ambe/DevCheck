@@ -56,21 +56,23 @@ app.innerHTML = `
 </header>
 <main id="top">
   <section class="hero section-alt">
+    <div class="hero-bg" aria-hidden="true"></div>
     <div class="container hero__grid">
-      <div>
+      <div class="hero-copy">
         <p class="pill">法人向け開発相談サービス</p>
-        <h1>開発に関するセカンドオピニオンは、<br>DevCheckへ。</h1>
-        <p class="lead">DevCheckは、受託開発の実績を持つ開発会社が運営する法人向けの開発相談サービスです。</p>
-        <p class="lead">見積もり・進め方・会社選びの不安を、<strong>現場を知る第三者視点</strong>でチェックします。</p>
-        <p class="lead">必要に応じて自社での対応も可能ですが、あくまで貴社に合った進め方を優先してご提案します。</p>
+        <h1>開発に関するセカンドオピニオンは、<br><span class="brand">DevCheckへ。</span></h1>
+        <p class="lead">DevCheckは、<strong>受託開発の実績</strong>を持つ<strong>開発会社が運営</strong>する法人向けの開発相談サービスです。</p>
+        <p class="lead">見積もり・進め方・開発会社選びの不安を、現場を知る<strong>第三者視点</strong>でチェックします。</p>
+        <p class="lead">必要に応じて自社での対応も可能ですが、あくまで<strong>貴社に合った進め方</strong>を優先してご提案します。</p>
         <a href="#form" class="btn">無料で相談する</a>
         <div class="badge-row"><span>匿名相談可</span><span>初回相談無料</span><span>NDA対応可</span><span>無理な営業なし</span></div>
       </div>
       <aside class="hero-card">
-        <p class="hero-card__title">発注前チェックリスト</p>
+        <p class="hero-card__title">発注前に確認したいこと</p>
         <ul>
-          <li>見積もりは妥当？</li><li>進め方にリスクはない？</li><li>会社選びは適切？</li><li>要件の抜け漏れはない？</li><li>発注前に確認すべき点は？</li>
+          <li>見積もりは妥当か</li><li>進め方にリスクはないか</li><li>開発会社選びは適切か</li><li>要件に抜け漏れはないか</li><li>相談前に整理すべき点は何か</li>
         </ul>
+        <p class="hero-card__note">DevCheckが第三者視点で整理します</p>
       </aside>
     </div>
   </section>
